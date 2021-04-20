@@ -1,5 +1,5 @@
 
-//TODO: Would be good to split the endpoints in a separate endpoints.js file and maybe attach swagger-autogen for documentation: https://medium.com/swlh/automatic-api-documentation-in-node-js-using-swagger-dd1ab3c78284
+//TODO: Would be good to split the endpoints in a separate endpoints.js file
 //TODO: Joi schema validation
 
 
@@ -27,6 +27,10 @@ const ecsFormat = require('@elastic/ecs-morgan-format') //Formats the logs using
 
 const _ = require('lodash');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require(__dirname + '/config/swagger.json');
+
+
 //const { v4: uuidv4 } = require('uuid');
 //var crypto = require('crypto');
 
@@ -38,7 +42,11 @@ const helperAMMiddleWare = require('./helperAMMiddleWare')
 
 const app = express()
 
+
 console.log('RUNNING IN MODE: ' + environment)
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // enable files upload - potential future use case
 app.use(fileUpload({
