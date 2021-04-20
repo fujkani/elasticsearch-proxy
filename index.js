@@ -2,12 +2,10 @@
 //TODO: Would be good to split the endpoints in a separate endpoints.js file
 //TODO: Joi schema validation
 
-
 //Entry point index.js
 //Exposes main REST endpoints
 
-
-//require('dotenv').config()
+//#region imports and requires
 const environment = (process.env.NODE_ENV === 'development') ? 'development' : 'production'
 require('dotenv').config({ path: `.env.${environment}` }) ////require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
 
@@ -39,13 +37,15 @@ const winstonLogger = require('./helperWinstonLogger')
 
 const helperAMMiddleWare = require('./helperAMMiddleWare')
 
+//#endregion imports and requires
 
+
+//RUN THE EXPRESS APP!
 const app = express()
-
 
 console.log('RUNNING IN MODE: ' + environment)
 
-
+//#region MiddleWares
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // enable files upload - potential future use case
@@ -62,7 +62,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Attach the Authorization Management middleware before starting the express app
+// Attach the custom Authorization Management middleware before starting the express app
 app.use(helperAMMiddleWare)
 
 app.use(
@@ -82,9 +82,10 @@ app.use(
     stream: winstonLogger.stream // process.stdout //winstonLogger.stream
   })
 );
+//#endregion MiddleWares
 
 
-//#region publisher endpoints
+//#region API endpoints
 
 app.get('/ping', async (req, res) => {
   try{
@@ -96,6 +97,15 @@ app.get('/ping', async (req, res) => {
 }
 });
 
+app.get('/getcurrentuserinfo', async (req, res) => {
+  try{
+    res.send(helperAMMiddleWare.userInfo)
+  }
+  catch (err) {
+    winstonLogger.error('getcurrentuserinfo error:' + err)
+    res.status(500).send(err);
+}
+});
 
 app.post('/:indexId/_search', async (req, res) => {
   try{
@@ -113,7 +123,7 @@ app.post('/:indexId/_search', async (req, res) => {
       //TODO: check request body !!!
       abc = await helperES.searchIndexAsync(indexName, req.body.body, helperAMMiddleWare.userCountriesArray)
       .then( ret => {
-        winstonLogger.info('Retrieved ES Entries')
+        winstonLogger.debug('Retrieved ES Entries')
         console.log(ret)
         res.send(JSON.stringify(ret))
       })
@@ -132,9 +142,10 @@ app.post('/:indexId/_search', async (req, res) => {
 });
 
 
-//#endregion eStore endpoints
+//#endregion API endpoints
 
 
+//start the Node server
 const startServer = async () => {
 
   const port = process.env.SERVER_PORT || 3000

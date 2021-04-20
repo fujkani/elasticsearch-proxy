@@ -1,3 +1,5 @@
+//Logger helper module
+
 const environment = (process.env.NODE_ENV === 'development') ? 'development' : 'production'
 require('dotenv').config({ path: `.env.${environment}` }) ////require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
 
@@ -52,10 +54,10 @@ const transports = [
     datePattern: 'YYYY-MM-DD',
     zippedArchive: true,
     maxSize: '20m',
-    maxFiles: '14d'
+    maxFiles: '14d',
+    level: level(),
   })
 ]
-
 
 const winstonLogger = winston.createLogger({
   level: level(),

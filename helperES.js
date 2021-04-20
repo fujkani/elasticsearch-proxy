@@ -19,7 +19,6 @@ const client = new Client({
 })
 
 
-
 module.exports =  {
     
     client,
@@ -38,7 +37,7 @@ module.exports =  {
                         winstonLogger.error(err)
                         reject(err)
                     } else {
-                        winstonLogger.info('Elasticsearch Ping worked')
+                        winstonLogger.debug('Elasticsearch Ping worked')
                         resolve()
                     }
                 });
@@ -64,12 +63,11 @@ module.exports =  {
             var query = null
 
             if (countriesArray.length >= 1){
-                query = {terms: { "properties.location.countries.keyword": countriesArray, "boost": 1.0 }}
+                query = {terms: { "properties.location.countries.keyword": countriesArray, "boost": 1.0 }} // *** AM enforcment
 
                 if (countriesArray.length == 1 && countriesArray[0] == 'All'){
-                    //GOD MODE
+                    //GOD MODE HERE - WE ARE ALLOWING ALL
                     query = {"match_all": {}}
-                    //query = {bool: { must: [] }}
                 }
             }
 
@@ -79,7 +77,7 @@ module.exports =  {
                 rBody = { size: 1, sort, query  }
             }
 
-            //query.bool.must.push({ match: { '_id': "HBjsCPySMGitdu_kJuptGA" } }) // *** AM enforcment
+            //query.bool.must.push({ match: { '_id': "HBjsCPySMGitdu_kJuptGA" } }) 
             
             winstonLogger.debug(query)
         

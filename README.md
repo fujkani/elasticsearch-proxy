@@ -34,6 +34,8 @@ Following additional features improve quality and maintenance:
     - ✨To comply with SGIS standards, we leave user authentication to IIS
     - ✨User authentication and AM filtering happens through the Express MiddleWare: helperAMMiddleWare
 
+- ✨Swagger interactive API documentation:
+    - ✨{baseURI}\api-docs
 
 ## Getting Started
 

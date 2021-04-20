@@ -63,6 +63,36 @@
           }
         }
       },
+      "/getcurrentuserinfo": {
+        "get": {
+          "tags": [
+            "getcurrentuserinfo"
+          ],
+          "summary": "Get User Info from ES",
+          "description": "Get User Info from ES",
+          "operationId": "getcurrentuserinfo",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "getcurrentuserinfo reply"
+            },
+            "500": {
+              "description": "getcurrentuserinfo error"
+            }
+          }
+        }
+      },
       "/{indexId}/_search": {
         "post": {
           "tags": [
