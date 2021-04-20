@@ -1,3 +1,5 @@
+//Logger helper module
+
 const environment = (process.env.NODE_ENV === 'development') ? 'development' : 'production'
 require('dotenv').config({ path: `.env.${environment}` }) ////require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
 
@@ -15,9 +17,8 @@ const levels = {
 }
 
 const level = () => {
-  //const environment = process.env.NODE_ENV || 'development'
   const isDevelopment = environment === 'development'
-  return isDevelopment ? 'debug' : 'warn'
+  return isDevelopment ? 'debug' : 'warning'
 }
 
 const colors = {
@@ -38,20 +39,11 @@ const format = winston.format.combine(
   ),
 )
 
-/*const transports = [
-  new winston.transports.Console(),
-  new winston.transports.File({
-    filename: 'logs/error.log',
-    level: 'error',
-  }),
-  new winston.transports.File({ filename: 'logs/all.log' }),
-]*/
-
 const transports = [
   new winston.transports.Console(),
   new winston.transports.DailyRotateFile({
     filename: 'logs/error-%DATE%.log',
-    datePattern: 'YYYY-MM-DD-HH',
+    datePattern: 'YYYY-MM-DD',
     zippedArchive: true,
     maxSize: '20m',
     maxFiles: '14d',
@@ -59,13 +51,13 @@ const transports = [
   }),
   new winston.transports.DailyRotateFile({
     filename: 'logs/all-%DATE%.log',
-    datePattern: 'YYYY-MM-DD-HH',
+    datePattern: 'YYYY-MM-DD',
     zippedArchive: true,
     maxSize: '20m',
-    maxFiles: '14d'
+    maxFiles: '14d',
+    level: level(),
   })
 ]
-
 
 const winstonLogger = winston.createLogger({
   level: level(),
@@ -83,7 +75,7 @@ winstonLogger.stream = {
 module.exports = winstonLogger
 
 
-/* ## another interesting example 
+/* ## another potential use:
 
 const { createLogger, format, transports } = require("winston");
 

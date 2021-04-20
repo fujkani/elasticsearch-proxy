@@ -1,0 +1,142 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "GeoBrowser API",
+      "description": "This is the GeoBrowser API scheme",
+      "contact": {
+        "email": "f.ujkani@iaea.org"
+      },
+      "license": {
+        "name": "SGIM-ISI",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      },
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Local Dev Server"
+      },
+      {
+        "url": "https://geoserver.sg.iaea.org/geobrowserapi",
+        "description": "PROD SGLAN Server"
+      },
+      {
+        "url": "https://geoportal.sg.info/geobrowserapi",
+        "description": "PROD ISE Server"
+      }
+    ],
+    "tags": [
+      {
+        "name": "GeoBrowser API",
+        "description": "GeoBrowser API"
+      }
+    ],
+    "paths": {
+      "/ping": {
+        "get": {
+          "tags": [
+            "ping"
+          ],
+          "summary": "ping",
+          "description": "Ping",
+          "operationId": "ping",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "ping reply"
+            },
+            "500": {
+              "description": "ping error"
+            }
+          }
+        }
+      },
+      "/getcurrentuserinfo": {
+        "get": {
+          "tags": [
+            "getcurrentuserinfo"
+          ],
+          "summary": "Get User Info from ES",
+          "description": "Get User Info from ES",
+          "operationId": "getcurrentuserinfo",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "getcurrentuserinfo reply"
+            },
+            "500": {
+              "description": "getcurrentuserinfo error"
+            }
+          }
+        }
+      },
+      "/{indexId}/_search": {
+        "post": {
+          "tags": [
+            "search"
+          ],
+          "summary": "searches ES",
+          "description": "searches ES",
+          "operationId": "searches",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "header",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "indexId",
+              "in": "path",
+              "description": "ES index or pattern",
+              "required": true,
+              "style": "simple",
+              "explode": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "Profile created"
+            },
+            "400": {
+              "description": "invalid input, object invalid"
+            },
+            "500": {
+              "description": "Error"
+            }
+          }
+        }
+      }
+    },
+    "components": {}
+  }

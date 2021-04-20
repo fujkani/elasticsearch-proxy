@@ -18,11 +18,10 @@ const client = new Client({
   }
 })
 
-const publicationIndexName  = process.env.ES_RASTER
-const licenseIndexName = 'abc'
-
 
 module.exports =  {
+    
+    client,
 
     esPingAsync: async function() {return await module.exports.esPing();},
 
@@ -38,7 +37,7 @@ module.exports =  {
                         winstonLogger.error(err)
                         reject(err)
                     } else {
-                        winstonLogger.info('Elasticsearch Ping worked')
+                        winstonLogger.debug('Elasticsearch Ping worked')
                         resolve()
                     }
                 });
@@ -51,153 +50,58 @@ module.exports =  {
 
     },
 
-    //Insert a publication in elastic
 
-    addPublicationAsync: async function(publicationJSON) {return await module.exports.addPublication(publicationJSON);},
-
-    addPublication: function(publicationJSON){
-        return new Promise((resolve, reject) => {
-            try{
-
-                //force an index create if not there already
-                client.indices.create({
-                    index: publicationIndexName
-                }, function(error, response, status) {
-                    if (error) {
-                        winstonLogger.info('Index already exists');
-                    } else {
-                        winstonLogger.info("created a new index", response);
-                    }
-                });
-
-                //index the document
-                res = client.index({
-                    index: publicationIndexName,
-                    id: publicationJSON['content-id'],
-                    type: 'publication',
-                    body: publicationJSON
-                }, function(err, resp, status) {
-                    if (err){
-                        winstonLogger.error(err)
-                        reject(err)
-                    }
-                    else {
-                        winstonLogger.debug(resp);
-                        resolve(resp)
-                    }
-                });
-
-                //resolve(res)
-            }
-            catch (err) {
-                winstonLogger.error(err)
-                reject(err)
-            }
-        });
-
-    },
-
-    getPublicationByContentIdAsync: async function(contentid) {
-
+    // Async Function
+    searchIndexAsync: async function(indexname, reqBody, userCountriesArray) {
         try{
 
-            var query = {bool: { must: [] }}
-            query.bool.must.push({ match: { '_id': contentid } })
-            winstonLogger.debug(query)
-            const sort = [{'properties.assetDate': {order : 'desc'}}]
-            //const _source = {"excludes": ["desc", "descHTML"]}
-            const _source = ["properties"]
-          
-            const { body } = await client.search({ index: publicationIndexName, body: { size: 1, sort, query  } })
-          
-            const res = body.hits.hits.map(e => ({ _id: e._id, ...e._source }))
-        
-            winstonLogger.debug(res)
-
-            return res
-        }
-        catch (err) {
-            winstonLogger.error(err)
-        }
-
-    },
-
-    addPublicationLicenseAsync: async function(publicationLicenseJSON) {return await module.exports.addPublicationLicense(publicationLicenseJSON);},
-
-    addPublicationLicense: function(publicationLicenseJSON){
-        return new Promise((resolve, reject) => {
-            try{
-
-                //force an index create if not there already
-                client.indices.create({
-                    index: licenseIndexName
-                }, function(error, response, status) {
-                    if (error) {
-                        winstonLogger.info('Index already exists');
-          
-                    } else {
-                        winstonLogger.info("created a new index", response);
-                    }
-                });
-
-                //index the document
-                res = client.index({
-                    index: licenseIndexName,
-                    id: publicationLicenseJSON['license_data']['id'],
-                    type: 'license',
-                    body: publicationLicenseJSON
-                }, function(err, resp, status) {
-                    if (err){
-                        winstonLogger.error(err)
-                        reject(err)
-                    }
-                    else {
-                        winstonLogger.debug(resp);
-                        resolve(resp)
-                    }
-                });
-
-                //resolve(res)
-            }
-            catch (err) {
-                winstonLogger.error(err)
-                reject(err)
-            }
-        });
-
-    },
-
-
-
-
-    searchIndexAsync: async function(indexname, reqBody) {
-
-        try{
+            const countriesArray = userCountriesArray //['Albania'] //
             const sort = [{'properties.assetDate': {order : 'desc'}}]
             //const _source = {"excludes": ["desc", "descHTML"]}
             const _source = ["properties"]
 
-            var query = {bool: { must: [] }}
+            var query = null
+
+            if (countriesArray.length >= 1){
+                query = {terms: { "properties.location.countries.keyword": countriesArray, "boost": 1.0 }} // *** AM enforcment
+
+                if (countriesArray.length == 1 && countriesArray[0] == 'All'){
+                    //GOD MODE HERE - WE ARE ALLOWING ALL
+                    query = {"match_all": {}}
+                }
+            }
 
             let rBody = reqBody
-
 
             if (!rBody){
                 rBody = { size: 1, sort, query  }
             }
 
-            query.bool.must.push({ match: { '_id': "HBjsCPySMGitdu_kJuptGA" } }) //AM implementation
+            //query.bool.must.push({ match: { '_id': "HBjsCPySMGitdu_kJuptGA" } }) 
             
             winstonLogger.debug(query)
-          
-            const { body } = await client.search({ index: indexname, body: { size: 1, sort, query  } })
-          
+        
+            const { body } = await client.search({ 
+                index: indexname, 
+                body: {
+                    size: 1000, 
+                    sort, 
+                    query  
+                } 
+            }, 
+            {
+                ignore: [404],
+                maxRetries: 3
+              }
+            )
+        
             const res = body.hits.hits.map(e => ({ _id: e._id, ...e._source }))
         
             winstonLogger.debug(res)
 
-            return res
+            return body //return res eventually
         }
+
         catch (err) {
             winstonLogger.error(err)
         }
@@ -206,13 +110,58 @@ module.exports =  {
 
 
 
-
-
-
-
-
-
-
-
-
 };
+
+
+
+/*
+ searchIndexAsync: async function(indexname, reqBody) {
+        try{
+
+            await client.get({
+                index: process.env.ES_ACCESS,
+                id: 'ujkanif'
+              }, async function callback(err, response, status){
+                if (err) {
+                  if(status == 404) console.log("Resource not found");
+                  else console.error(err.message);
+                }
+                else {
+                    console.log(response)
+                    const sort = [{'properties.assetDate': {order : 'desc'}}]
+                    //const _source = {"excludes": ["desc", "descHTML"]}
+                    const _source = ["properties"]
+        
+                    var query = {bool: { must: [] }}
+        
+                    let rBody = reqBody
+        
+        
+                    if (!rBody){
+                        rBody = { size: 1, sort, query  }
+                    }
+        
+                    query.bool.must.push({ match: { '_id': "HBjsCPySMGitdu_kJuptGA" } }) //AM implementation
+                    
+                    winstonLogger.debug(query)
+                
+                    const { body } = await client.search({ index: indexname, body: { size: 1, sort, query  } })
+                
+                    const res = body.hits.hits.map(e => ({ _id: e._id, ...e._source }))
+                
+                    winstonLogger.debug(res)
+        
+                    return res
+                }
+                
+                
+               })
+
+
+        }
+        catch (err) {
+            winstonLogger.error(err)
+        }
+
+    }
+    */
