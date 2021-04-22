@@ -12,7 +12,6 @@ require('dotenv').config({ path: `.env.${environment}` }) ////require('dotenv').
 var yaml_config = require('node-yaml-config');
 var config = yaml_config.load(__dirname + '/config/config.yml', environment);
 
-const morganFormat = environment !== "production" ? "dev" : "combined";
 
 const express = require('express')
 const fileUpload = require('express-fileupload');
@@ -21,6 +20,7 @@ const { promisify } = require('util') //The util.promisify() method defines in u
 
 const cors = require('cors');
 const morgan = require('morgan');
+//const morganFormat = environment !== "production" ? "dev" : "combined";
 const ecsFormat = require('@elastic/ecs-morgan-format') //Formats the logs using Elastic Common Schema
 
 const _ = require('lodash');
@@ -121,7 +121,7 @@ app.post('/:indexId/_search', async (req, res) => {
 
       let indexName = req.params["indexId"]
       //TODO: check request body !!!
-      abc = await helperES.searchIndexAsync(indexName, req.body.body, helperAMMiddleWare.userCountriesArray)
+      abc = await helperES.searchIndexAsync(indexName, req.body, helperAMMiddleWare.userCountriesArray)
       .then( ret => {
         winstonLogger.debug('Retrieved ES Entries')
         console.log(ret)
