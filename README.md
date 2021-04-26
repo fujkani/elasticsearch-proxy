@@ -12,6 +12,8 @@ Following feaatures / restrictions are implemented:
     - ✨A valid user should be passed as part of the HTTP Header
     - ✨Content-Type Header should be set to "application/json"
     - ✨Specifying  HTTP Body is optional but if present it should be a valid Elastic Query. Any passed query will be ammended with user countries to ensure only records within those countries are returned
+    - ✨ Only Elasticsearch Search API is covered and no all combinations of the body parameter are tested. SQL-type querying through a query_string parameter not supported. ES Search API:
+    https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html#request-body-search-query
 
 - ✨Business Rules:
     - ✨The user should exist in isi_data_access index (or index name specified in env var: ES_ACCESS)
