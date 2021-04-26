@@ -39,6 +39,18 @@ const helperAMMiddleWare = require('./helperAMMiddleWare')
 
 //#endregion imports and requires
 
+//#region Vars
+const headers = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTION"
+}
+
+////#endregion
+
+
+
 
 //RUN THE EXPRESS APP!
 const app = express()
@@ -89,7 +101,15 @@ app.use(
 
 app.get('/ping', async (req, res) => {
   try{
-    res.send("Reply from GeoBrowser API ver: " + (process.env.API_VESION === null ? 'none' : process.env.API_VESION))
+
+    res.set(headers)
+    res.status(200).send(
+      {
+        body: { status: "success", result:  "Reply from GeoBrowser API ver: " + (process.env.API_VESION === null ? 'none' : process.env.API_VESION) }
+      }
+    );
+
+    //res.send("Reply from GeoBrowser API ver: " + (process.env.API_VESION === null ? 'none' : process.env.API_VESION))
   }
   catch (err) {
     winstonLogger.error('Ping error:' + err)
@@ -99,7 +119,14 @@ app.get('/ping', async (req, res) => {
 
 app.get('/getcurrentuserinfo', async (req, res) => {
   try{
-    res.send(helperAMMiddleWare.userInfo)
+
+    res.set(headers)
+    res.status(200).send(
+      {
+        body: { status: "success", result:  helperAMMiddleWare.userInfo }
+      }
+    );
+    //res.send(helperAMMiddleWare.userInfo)
   }
   catch (err) {
     winstonLogger.error('getcurrentuserinfo error:' + err)
@@ -112,9 +139,10 @@ app.post('/:indexId/_search', async (req, res) => {
 
     if (!req.params){
 
-      res.send({
-        status: 400,
-        message: 'A index name or pattern needs to be specified in the URI <baseuri>/indexname/_search'
+      res.set(headers)
+      res.status(400).send(
+        {
+        body: { status: "failure", result:  'A index name or pattern needs to be specified in the URI <baseuri>/indexname/_search' }
       });
     }
     else {
@@ -124,12 +152,17 @@ app.post('/:indexId/_search', async (req, res) => {
       abc = await helperES.searchIndexAsync(indexName, req.body, helperAMMiddleWare.userCountriesArray)
       .then( ret => {
         winstonLogger.debug('Retrieved ES Entries')
-        console.log(ret)
-        res.send(JSON.stringify(ret))
+        winstonLogger.debug(ret)
+        res.set(headers)
+        res.status(200).send(
+          {
+            body: { status: "success", result:  ret }
+          }
+        )
+        //res.send(JSON.stringify(ret))
       })
       .catch(err => {
         winstonLogger.error('Get ES Entries failed: ' + err)
-        console.error(err)
       });
 
     }
@@ -140,7 +173,6 @@ app.post('/:indexId/_search', async (req, res) => {
     res.status(500).send(err);
 }
 });
-
 
 //#endregion API endpoints
 
