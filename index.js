@@ -82,11 +82,10 @@ app.get('/ping', async (req, res) => {
     res.set(headers)
     res.status(200).send(
       {
-        body: { status: "success", result:  "Reply from GeoBrowser API ver: " + (process.env.API_VESION === null ? 'none' : process.env.API_VESION) }
+        body: { status: "success", result:  "Reply from Proxy API ver: " + (process.env.API_VESION === null ? 'none' : process.env.API_VESION) }
       }
     );
 
-    //res.send("Reply from GeoBrowser API ver: " + (process.env.API_VESION === null ? 'none' : process.env.API_VESION))
   }
   catch (err) {
     winstonLogger.error('Ping error:' + err)
