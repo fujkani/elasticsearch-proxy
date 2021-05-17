@@ -7,12 +7,8 @@
 const environment = (process.env.NODE_ENV === 'development') ? 'development' : 'production'
 require('dotenv').config({ path: `.env.${environment}` })
 
-var yaml_config = require('node-yaml-config');
-var config = yaml_config.load(__dirname + '/config/config.yml', environment);
-
-
 const express = require('express')
-const fileUpload = require('express-fileupload');
+
 const bodyParser = require('body-parser')
 const { promisify } = require('util') //The util.promisify() method defines in utilities module of Node.js standard library. It is basically used to convert a method that returns responses using a callback function to return responses in a promise object
 
@@ -49,15 +45,6 @@ console.log('RUNNING IN MODE: ' + environment)
 
 //#region MiddleWares
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// enable files upload - potential future use case
-app.use(fileUpload({
-  createParentPath: true,
-  limits: { 
-      fileSize: 200 * 1024 * 1024 * 1024 //200MB max file(s) size
-  },
-  abortOnLimit: true
-}));
 
 //add other middleware
 app.use(cors());
