@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
     }
 
     winstonLogger.debug(req.path + ' end point invoked by user: ' + req.headers.user)
-    winstonLogger.debug('Authorization Management module invoked..')
+    winstonLogger.debug('Authorization module invoked..')
 
     const userAccess = await helperES.client.get({
         index: process.env.ES_ACCESS,
@@ -27,11 +27,11 @@ module.exports = async (req, res, next) => {
     var countriesArray = []
     if (userAccess && userAccess.body.found) {
         countriesArray = userAccess.body._source.dataaccess
-        if (countriesArray.lenght == 0) throw new Error('No countries have been granted for User: ' + req.headers.user)
+        if (countriesArray.lenght == 0) throw new Error('No data categories have been granted for User: ' + req.headers.user)
     }
     else throw new Error('User: ' + req.headers.user + ' is not granted access to any data!')
     
-    winstonLogger.debug('User: ' + req.headers.user + ' has access to following countries: ' + countriesArray.join())
+    winstonLogger.debug('User: ' + req.headers.user + ' has access to following data categories: ' + countriesArray.join())
 
     module.exports.userCountriesArray = countriesArray
     module.exports.user = req.headers.user
