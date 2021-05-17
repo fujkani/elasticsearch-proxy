@@ -1,7 +1,7 @@
 {
   "name": "rest-api",
   "version": "1.0.0",
-  "description": "GeoBrowser REST API",
+  "description": "Elasticsearch Proxy REST API",
   "main": "index.js",
   "scripts": {
     "start": "node .",
