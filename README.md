@@ -1,4 +1,4 @@
-# Node Express Proxy API for Elasticcearch
+# Node Express Proxy API for Elasticsearch
 
 This Node Express sample REST API handles secure requests from a client application  into the ElasticSearch indexes.
 
@@ -13,7 +13,7 @@ Use cases covered:
 Interesting patterns covered:
 1. User Authentication & Authorization
 2. Controlling which indexes can be searched
-3. Logging and log file formatting to support FileBeat pickup
+3. Logging and log file formatting to support FileBeat import into Elasticcearch for Kibana use
 4. Use of Swagger wrapper to get basic documentation and a tester page
 5. Use of DOTENV to handle environments
 6. Use of Node Express MiddleWare to intercept calls
