@@ -1,5 +1,3 @@
-
-//TODO: Would be good to split the endpoints in a separate endpoints.js file
 //TODO: Joi schema validation
 
 //Entry point index.js
@@ -7,7 +5,7 @@
 
 //#region imports and requires
 const environment = (process.env.NODE_ENV === 'development') ? 'development' : 'production'
-require('dotenv').config({ path: `.env.${environment}` }) ////require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
+require('dotenv').config({ path: `.env.${environment}` })
 
 var yaml_config = require('node-yaml-config');
 var config = yaml_config.load(__dirname + '/config/config.yml', environment);
@@ -20,17 +18,12 @@ const { promisify } = require('util') //The util.promisify() method defines in u
 
 const cors = require('cors');
 const morgan = require('morgan');
-//const morganFormat = environment !== "production" ? "dev" : "combined";
 const ecsFormat = require('@elastic/ecs-morgan-format') //Formats the logs using Elastic Common Schema
 
 const _ = require('lodash');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require(__dirname + '/config/swagger.json');
-
-
-//const { v4: uuidv4 } = require('uuid');
-//var crypto = require('crypto');
 
 const helperES = require('./helperES')
 const winstonLogger = require('./helperWinstonLogger')
@@ -48,9 +41,6 @@ const headers = {
 }
 
 ////#endregion Vars
-
-
-
 
 //RUN THE EXPRESS APP!
 const app = express()
@@ -149,7 +139,7 @@ app.post('/:indexId/_search', async (req, res) => {
 
       let indexName = req.params["indexId"]
       //TODO: check request body !!!
-      abc = await helperES.searchIndexAsync(indexName, req.body, helperAMMiddleWare.userCountriesArray)
+      abc = await helperES.searchIndexAsync(indexName, req.body, helperAMMiddleWare.userCategoriesArray)
       .then( ret => {
         winstonLogger.debug('Retrieved ES Entries')
         winstonLogger.debug(ret)
