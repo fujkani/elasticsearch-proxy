@@ -1,13 +1,13 @@
 {
     "openapi": "3.0.0",
     "info": {
-      "title": "GeoBrowser API",
-      "description": "This is the GeoBrowser API scheme",
+      "title": "Elasticsearch Proxy API",
+      "description": "This is the Elasticsearch Proxy API scheme",
       "contact": {
-        "email": "f.ujkani@iaea.org"
+        "email": "fujkani@hotmail.com"
       },
       "license": {
-        "name": "SGIM-ISI",
+        "name": "MIT",
         "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
       },
       "version": "1.0.0"
@@ -18,18 +18,14 @@
         "description": "Local Dev Server"
       },
       {
-        "url": "https://geoserver.sg.iaea.org/geobrowserapi",
-        "description": "PROD SGLAN Server"
-      },
-      {
-        "url": "https://geoportal.sg.info/geobrowserapi",
-        "description": "PROD ISE Server"
+        "url": "https://myprod.server/api",
+        "description": "PROD Server"
       }
     ],
     "tags": [
       {
-        "name": "GeoBrowser API",
-        "description": "GeoBrowser API"
+        "name": "Elasticsearch Proxy API",
+        "description": "Elasticsearch Proxy API"
       }
     ],
     "paths": {
