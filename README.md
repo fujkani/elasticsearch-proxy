@@ -80,6 +80,3 @@ Any HTTP capable client capable of initiating POST can be used. Examples include
 
 Fatjon Ujkani
 
-## License
-
-SGIM-ISI
