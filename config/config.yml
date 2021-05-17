@@ -2,15 +2,14 @@ default:
   server:
     port: 3000
   database:
-    host: 'SDB312PD'
-    schema: "svc_sgagsservices"
+    host: 'localhost'
+    schema: "data"
   elastic:
     host: localhost
     port: 9200
     allowedIndexes:
-      - isi_data_rasters
-      - isi_data_states
-      - isi_data_sites
+      - data_rasters
+      - data_states
 development:
   database:
     db: 'dev_db'
@@ -23,6 +22,5 @@ production:
   database:
     db: 'prod_db'
     user: 'dbuser'
-    password: 'pass'
   cache:
     dir: 'static'
