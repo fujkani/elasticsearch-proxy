@@ -57,7 +57,7 @@ module.exports =  {
 
             var modifiedreqBody = reqBody
 
-            const post_filter = {terms: { "properties.location.countries.keyword": userCategoriesArray, "boost": 1.0 }} // *** Authorization filtering enforcment
+            const post_filter = {terms: { "properties.location.categories.keyword": userCategoriesArray, "boost": 1.0 }} // *** Authorization filtering enforcment
 
             if (!modifiedreqBody.query ) modifiedreqBody.query = {"match_all": {}}
 
