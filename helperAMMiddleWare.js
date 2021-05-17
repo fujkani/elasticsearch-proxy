@@ -1,5 +1,5 @@
 //Authorization MiddleWare module.
-// 1. Ensures user exists in the HTTP Header and if so, 2. 
+// 1. Ensures user exists in the HTTP Header and if so, 2. Populates few variables
 
 const helperES = require('./helperES')
 const winstonLogger = require('./helperWinstonLogger')
