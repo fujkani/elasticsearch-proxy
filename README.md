@@ -1,8 +1,20 @@
-# GEOBROWSER REST API
+# Node Express Proxy API for Elasticcearch
 
-This Node Express REST API handles secure requests from GeoBrowser or any other client application and into the ISI ElasticSearch foundation data.
+This Node Express sample REST API handles secure requests from a client application  into the ElasticSearch indexes.
 
-The first version(s) of this API will serve primarily similiar to a server proxy with a filtering mechanism, i.e. incoming requests will be validated then a user-based filter will be added on the fly before sending queries to Elasticsearch and replying to the calling application.
+The API receives POST requests representing search queries, verifies the user is allowed to make this call and then passes the request over to Elasticsearch.
+
+In addition, before replying back to the user, the API applies a post_query and limits the returned result based on user.
+
+Use cases covered:
+1. Secure proxy API to Elasticcearch
+2. Filter outgoing data by user
+
+Interesting patterns covered:
+1. User Authentication & Authorization
+2. Controlling which indexes can be searched
+3. Logging and log file formatting to support FileBeat pickup
+4. Use of Swagger wrapper to get basic documentation and a tester page
 
 
 Following feaatures / restrictions are implemented:
@@ -12,11 +24,11 @@ Following feaatures / restrictions are implemented:
     - ✨A valid user should be passed as part of the HTTP Header
     - ✨Content-Type Header should be set to "application/json"
     - ✨Specifying  HTTP Body is optional but if present it should be a valid Elastic Query. Any passed query will be ammended with user countries to ensure only records within those countries are returned
-    - ✨ Only Elasticsearch Search API is covered and no all combinations of the body parameter are tested. SQL-type querying through a query_string parameter not supported. ES Search API:
+    - ✨ Only Elasticsearch Search API is covered and not all combinations of the body parameter are tested. SQL-type querying through a query_string parameter not supported. ES Search API:
     https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html#request-body-search-query
 
 - ✨Business Rules:
-    - ✨The user should exist in isi_data_access index (or index name specified in env var: ES_ACCESS)
+    - ✨The user should exist in data_access index (or index name specified in env var: ES_ACCESS)
     - ✨Only certain indexes are allowed to be searched (index specified in config)
     - ✨Only Searches are allowed, i.e. only reading of data
     - ✨Unless otherwise specified through the "_source" element of the query body, all fields are returned with each document
@@ -30,11 +42,11 @@ Following additional features improve quality and maintenance:
     - ✨Generated logs are ingesteable by FileBeat into Elasticcearch which can then be explored in Kibana dashboards and visualizations
 
 - ✨Request Validation:
-    - ✨Schema validation is achieved through npm package Joi
+    - ✨Schema validation is achieved through npm package Joi (to be implemented)
 
 - ✨User Authentication & Authorization
-    - ✨To comply with SGIS standards, we leave user authentication to IIS
-    - ✨User authentication and AM filtering happens through the Express MiddleWare: helperAMMiddleWare
+    - ✨It is assumed user authentication is already done by web server IIS/other
+    - ✨User authentication happens through the Express MiddleWare: helperAMMiddleWare
 
 - ✨Swagger interactive API documentation:
     - ✨{baseURI}\api-docs
