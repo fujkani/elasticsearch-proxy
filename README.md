@@ -15,6 +15,8 @@ Interesting patterns covered:
 2. Controlling which indexes can be searched
 3. Logging and log file formatting to support FileBeat pickup
 4. Use of Swagger wrapper to get basic documentation and a tester page
+5. Use of DOTENV to handle environments
+6. Use of Node Express MiddleWare to intercept calls
 
 
 Following feaatures / restrictions are implemented:
