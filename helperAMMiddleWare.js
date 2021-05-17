@@ -24,16 +24,16 @@ module.exports = async (req, res, next) => {
       }
     )
     
-    var countriesArray = []
+    var categoriesArray = []
     if (userAccess && userAccess.body.found) {
-        countriesArray = userAccess.body._source.dataaccess
-        if (countriesArray.lenght == 0) throw new Error('No data categories have been granted for User: ' + req.headers.user)
+        categoriesArray = userAccess.body._source.dataaccess
+        if (categoriesArray.lenght == 0) throw new Error('No data categories have been granted for User: ' + req.headers.user)
     }
     else throw new Error('User: ' + req.headers.user + ' is not granted access to any data!')
     
-    winstonLogger.debug('User: ' + req.headers.user + ' has access to following data categories: ' + countriesArray.join())
+    winstonLogger.debug('User: ' + req.headers.user + ' has access to following data categories: ' + categoriesArray.join())
 
-    module.exports.userCountriesArray = countriesArray
+    module.exports.userCategoriesArray = categoriesArray
     module.exports.user = req.headers.user
     module.exports.userInfo = userAccess.body._source
 
